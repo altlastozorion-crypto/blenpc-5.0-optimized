@@ -1,18 +1,18 @@
-# MF v5.1 Prosedürel Bina Üretim Motoru (Blender 4.3)
+# MF v5.1 Prosedürel Bina Üretim Motoru (Blender 5.0.1)
 
 MF v5.1, Blender 4.3 ve Godot Engine için optimize edilmiş, deterministik ve modüler bir prosedürel bina üretim motorudur. BSP (Binary Space Partitioning) tabanlı kat planı algoritması ve segment tabanlı mesh üretim mimarisi ile oyun geliştirme süreçlerini hızlandırır.
 
 ## Özellikler
 
 - **Deterministik Üretim:** Aynı `seed` değeri her zaman aynı binayı üretir.
-- **Blender 4.3 Entegrasyonu:** En yeni `bpy` ve `bmesh` API'leri ile tam uyumlu.
+- **Blender 5.0.1 Entegrasyonu:** En yeni `bpy` ve `bmesh` API'leri ile tam uyumlu.
 - **Manifold Geometri:** İç yüzeylerden (internal faces) arındırılmış, oyun motoru dostu mesh yapısı.
 - **Godot Hazır:** Otomatik collider (`-col` suffix) ve manifest üretimi.
 - **Gelişmiş Çatı Tipleri:** Hip, Gabled, Shed ve Flat çatı desteği.
 
 ## Kurulum
 
-1. **Blender 4.3+** yüklü olduğundan emin olun.
+1. **Blender 5.0.1+** yüklü olduğundan emin olun.
 2. Bağımlılıkları yükleyin (Blender dışı testler için):
    ```bash
    pip install -r requirements.txt

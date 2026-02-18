@@ -1,8 +1,8 @@
 # MF v5.1 Production Dependencies
-# Blender 4.3 includes most of these, but useful for CI/CD and external tooling.
+# Blender 5.0.1 includes most of these, but useful for CI/CD and external tooling.
 
 numpy>=1.24.0
 pytest>=7.0.0
 pytest-cov>=4.0.0
 # bpy is not pip-installable easily for system python, but required for local dev/test if available
-# bpy>=4.0.0
+# bpy>=5.0.0

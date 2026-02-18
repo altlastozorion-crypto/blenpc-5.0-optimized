@@ -33,19 +33,19 @@ def export_manifest(output_path: Path, building_name: str, settings: ExportSetti
     output_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
     return output_path
 
-def export_to_glb(output_dir: Path, building_name: str, settings: ExportSettings = ExportSettings()):
+def export_to_glb(obj: bpy.types.Object, output_dir: Path, filename: str, settings: ExportSettings = ExportSettings()):
     """Actual GLB export using bpy.ops for Blender 4.3."""
     if bpy is None:
         return None
         
     output_dir.mkdir(parents=True, exist_ok=True)
     
-    building_path = output_dir / f"{building_name}.glb"
+    filepath = output_dir / f"{filename}.glb"
     
     # In Blender 4.x, some export parameters might have changed, but gltf basic ones are stable
     try:
         bpy.ops.export_scene.gltf(
-            filepath=str(building_path),
+            filepath=str(filepath),
             export_format='GLB',
             use_selection=settings.selected_only,
             export_yup=settings.y_up,
@@ -55,16 +55,8 @@ def export_to_glb(output_dir: Path, building_name: str, settings: ExportSettings
         print(f"Export failed: {e}")
         return None
     
-    collider_path = output_dir / f"{building_name}{settings.collider_suffix}.glb"
-    try:
-        bpy.ops.export_scene.gltf(
-            filepath=str(collider_path),
-            export_format='GLB',
-            use_selection=settings.selected_only,
-            export_yup=settings.y_up,
-            export_apply=settings.apply_modifiers,
-        )
-    except Exception as e:
-        print(f"Collider export failed: {e}")
+    # Selection handling is now done in engine.py before calling this function
+    # This function now exports a single object that is already selected
+    # The collider path logic should be handled by the caller as well
     
-    return building_path, collider_path
+    return filepath

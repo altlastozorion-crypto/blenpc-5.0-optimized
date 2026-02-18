@@ -39,7 +39,7 @@ def _add_box_with_uv(bm: bmesh.types.BMesh, x1, y1, z1, x2, y2, z2, uv_layer):
 def create_wall_mesh(segments: Iterable[WallSegment], name: str = "Walls", material: Optional[bpy.types.Material] = None):
     mesh = bpy.data.meshes.new(name)
     obj = bpy.data.objects.new(name, mesh)
-    bpy.context.collection.objects.link(obj)
+    bpy.context.scene.collection.objects.link(obj)
     if material: obj.data.materials.append(material)
     
     bm = bmesh.new()
@@ -67,7 +67,7 @@ def create_wall_mesh(segments: Iterable[WallSegment], name: str = "Walls", mater
 def create_slab_mesh(slabs: Iterable[Slab], name: str = "Slabs", material: Optional[bpy.types.Material] = None):
     mesh = bpy.data.meshes.new(name)
     obj = bpy.data.objects.new(name, mesh)
-    bpy.context.collection.objects.link(obj)
+    bpy.context.scene.collection.objects.link(obj)
     if material: obj.data.materials.append(material)
         
     bm = bmesh.new()
@@ -96,7 +96,7 @@ def create_slab_mesh(slabs: Iterable[Slab], name: str = "Slabs", material: Optio
 def create_roof_mesh(roof_geo: RoofGeometry, name: str = "Roof", material: Optional[bpy.types.Material] = None):
     mesh = bpy.data.meshes.new(name)
     obj = bpy.data.objects.new(name, mesh)
-    bpy.context.collection.objects.link(obj)
+    bpy.context.scene.collection.objects.link(obj)
     if material: obj.data.materials.append(material)
     
     bm = bmesh.new()
@@ -120,6 +120,9 @@ def final_merge_and_cleanup(objects: List[bpy.types.Object], merge_distance: flo
     if not valid_objs: return None
     for obj in valid_objs: obj.select_set(True)
     bpy.context.view_layer.objects.active = valid_objs[0]
+        # Ensure the object is in the scene collection before joining
+        if valid_objs[0].name not in bpy.context.scene.collection.objects:
+            bpy.context.scene.collection.objects.link(valid_objs[0])
     bpy.ops.object.join()
     merged_obj = bpy.context.active_object
     merged_obj.name = "Building_Final"

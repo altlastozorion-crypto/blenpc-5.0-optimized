@@ -14,7 +14,7 @@ def create_simplified_collider(building_obj: bpy.types.Object, name: str = "Buil
     # Create a copy of the building object
     collider_mesh = building_obj.data.copy()
     collider_obj = bpy.data.objects.new(name, collider_mesh)
-    bpy.context.collection.objects.link(collider_obj)
+    bpy.context.scene.collection.objects.link(collider_obj)
     
     # Process the mesh for simplification
     bm = bmesh.new()

@@ -12,9 +12,11 @@ try:
     from .blender_mesh import create_wall_mesh, create_slab_mesh, create_roof_mesh, final_merge_and_cleanup
     from .export import export_to_glb
     from .collider import create_simplified_collider
-    from .stairs import build_stair_mesh, generate_stairwell
+    from .stairs import build_stair_mesh
 except ImportError:
     bpy = None
+
+from .stairs import generate_stairwell
 
 from .adjacency import build_adjacency, corridor_facing_walls
 from .cleanup import dedupe_segments, remove_zero_length_segments
@@ -145,9 +147,20 @@ def generate(spec: BuildingSpec, output_dir: Path) -> GenerationOutput:
             if final_obj:
                 collider_obj = create_simplified_collider(final_obj, "Building_Collider")
                 settings = ExportSettings()
-                paths = export_to_glb(output_dir, "Building", settings)
-                export_to_glb(output_dir, "Building-col", settings)
-                if paths: glb_path = str(paths[0])
+                # Deselect all objects first
+                bpy.ops.object.select_all(action='DESELECT')
+                # Select the final building object
+                final_obj.select_set(True)
+                # Export the main building
+                building_glb_path = export_to_glb(final_obj, output_dir, "Building", settings)
+                if building_glb_path: glb_path = str(building_glb_path)
+                # Deselect all objects again
+                bpy.ops.object.select_all(action='DESELECT')
+                # Select the collider object
+                collider_obj.select_set(True)
+                # Export the collider
+                collider_glb_path = export_to_glb(collider_obj, output_dir, "Building-col", settings)
+
             else:
                 raise ExportError("Failed to create merged building object.")
 

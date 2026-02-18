@@ -4,8 +4,12 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import List, Optional
-import bpy
-import bmesh
+try:
+    import bpy
+    import bmesh
+except ImportError:
+    bpy = None
+    bmesh = None
 from .datamodel import Rect, Room
 from .config import STORY_HEIGHT, TEXTURE_TILE_SIZE
 
@@ -45,7 +49,7 @@ def build_stair_mesh(stairwell: Stairwell, total_floors: int, name: str = "Stair
     """Create a mesh for the stairs connecting all floors."""
     mesh = bpy.data.meshes.new(name)
     obj = bpy.data.objects.new(name, mesh)
-    bpy.context.collection.objects.link(obj)
+    bpy.context.scene.collection.objects.link(obj)
     
     if material:
         obj.data.materials.append(material)
