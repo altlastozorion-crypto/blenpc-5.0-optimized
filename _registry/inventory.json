@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "last_updated": "2026-02-18T12:22:33",
+  "last_updated": "2026-02-18T13:21:08",
   "assets": {
     "EngineeredWall_V1": {
       "name": "EngineeredWall_V1",
@@ -73,6 +73,36 @@
       ],
       "blend_file": "_library/MathWall_S456.blend",
       "seed": 456
+    },
+    "StandardEngineeredWall": {
+      "name": "StandardEngineeredWall",
+      "tags": [
+        "arch_wall",
+        "style_modern",
+        "mat_brick"
+      ],
+      "dimensions": {
+        "width": 6.0,
+        "height": 3.0,
+        "depth": 0.2
+      },
+      "slots": [
+        {
+          "id": "main_opening",
+          "type": "window_opening",
+          "pos": [
+            3.5,
+            0,
+            1.2
+          ],
+          "size": [
+            1.0,
+            1.2
+          ]
+        }
+      ],
+      "blend_file": "_library/StandardEngineeredWall.blend",
+      "seed": 2026
     }
   }
 }

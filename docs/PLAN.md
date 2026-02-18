@@ -11,17 +11,17 @@ Proje, basit bir mesh üreticiden ziyade, deterministik matematiksel kurallara d
 - **Modülerlik:** Her şey bir "Atom" veya "Asset"tir; slot sistemiyle birbirine bağlanır.
 - **CLI-First:** Doğrudan Python çağrısı yerine `input.json` -> `output.json` akışı.
 
-## 2. Uygulama Adımları (Sıralı)
+## 2. Uygulama Adımları (Tamamlandı ✅)
 
-| Adım | Modül | Açıklama |
+| Adım | Modül | Durum |
 | :--- | :--- | :--- |
-| 1 | `version_check.py` | Blender 5.0.1 API (asset_mark, preview vb.) doğrulaması. |
-| 2 | `config.py` | `GRID_UNIT`, `MAX_SLOTS`, `ALLOWED_ROTATIONS` gibi sabitlerin tanımlanması. |
-| 3 | `_registry/` | `inventory.json`, `slot_types.json`, `tag_vocabulary.json` şemalarının oluşturulması. |
-| 4 | `engine/slot_engine.py` | AABB hesaplama, `place_on_slot` ve `find_asset` mantığının kurulması. |
-| 5 | `atoms/wall.py` | Golden Ratio BSP ve trigonometrik slot hesaplamalı ilk atomun üretimi. |
-| 6 | `run_command.py` | CLI giriş noktası, headless Blender operasyon yönetimi. |
-| 7 | `tests/` | Fixture JSON'lar ile kapsamlı pytest entegrasyonu. |
+| 1 | `version_check.py` | ✅ Doğrulandı |
+| 2 | `config.py` | ✅ Tanımlandı |
+| 3 | `_registry/` | ✅ Oluşturuldu |
+| 4 | `engine/slot_engine.py` | ✅ Geliştirildi |
+| 5 | `atoms/wall.py` | ✅ Üretildi |
+| 6 | `run_command.py` | ✅ CLI Hazır |
+| 7 | `tests/` | ✅ Testler Geçti |
 
 ## 3. Teknik Detaylar
 - **Koordinat Sistemi:** Godot uyumlu Y-up sistemi.

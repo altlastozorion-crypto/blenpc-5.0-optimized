@@ -1,0 +1,9 @@
+{
+  "command": "create_wall",
+  "seed": 2026,
+  "asset": {
+    "name": "StandardEngineeredWall",
+    "dimensions": {"width": 6.0},
+    "tags": ["arch_wall", "style_modern", "mat_brick"]
+  }
+}

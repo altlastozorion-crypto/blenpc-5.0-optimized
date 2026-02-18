@@ -12,12 +12,12 @@
 
 ## Faz 3: Mimari Atomlar ve Üretim
 - [x] `atoms/wall.py` geliştirilmesi
-    - [x] Golden Ratio BSP bölünmesi
-    - [x] Trigonometrik slot/açı hesaplamaları
-    - [x] Euler Manifold check entegrasyonu
+    - [x] Golden Ratio BSP bölünmesi (GRID_UNIT snapping dahil)
+    - [x] Trigonometrik slot/açı hesaplamaları (Deterministik RNG zinciri)
+    - [x] Euler Manifold check entegrasyonu (V-E+F=2 doğrulaması)
 - [x] `run_command.py` CLI arayüzünün tamamlanması
 
 ## Faz 4: Test ve Kalite Kontrol
-- [ ] `tests/fixtures/` altına örnek input JSON'ların eklenmesi
-- [ ] `pytest` ile headless Blender testlerinin koşturulması
-- [ ] Sonuç raporlama sisteminin (output.json) doğrulanması
+- [x] `tests/fixtures/` altına örnek input JSON'ların eklenmesi
+- [x] `pytest` ile headless Blender testlerinin koşturulması
+- [x] Sonuç raporlama sisteminin (output.json) doğrulanması
