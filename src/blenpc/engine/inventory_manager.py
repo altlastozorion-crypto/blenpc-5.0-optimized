@@ -3,11 +3,8 @@ import os
 import time
 from typing import List, Dict, Optional
 
-# Use safe import from the project root
-try:
-    import config
-except ImportError:
-    from .. import config
+# Expert Fix: Absolute imports for the package structure
+from .. import config
     
 LOCK_FILE = os.path.join(config.REGISTRY_DIR, ".inventory.lock")
 
@@ -20,11 +17,9 @@ class InventoryManager:
             
         start_time = time.time()
         while os.path.exists(LOCK_FILE):
-            # CHECK IF LOCK IS STALE
             if os.path.exists(LOCK_FILE):
                 lock_age = time.time() - os.path.getmtime(LOCK_FILE)
                 if lock_age > config.INVENTORY_LOCK_STALE_AGE:
-                    # Stale lock, remove it
                     try:
                         os.remove(LOCK_FILE)
                     except:
@@ -66,7 +61,7 @@ class InventoryManager:
         """Add or update an asset in the inventory with locking."""
         InventoryManager.acquire_lock()
         try:
-            inventory = {"version": "1.0", "assets": {}}
+            inventory = {"version": "1.1", "assets": {}}
             if os.path.exists(config.INVENTORY_FILE):
                 with open(config.INVENTORY_FILE, "r") as f:
                     inventory = json.load(f)
@@ -75,10 +70,16 @@ class InventoryManager:
             inventory["assets"][name] = asset_data
             inventory["last_updated"] = time.strftime("%Y-%m-%dT%H:%M:%S")
             
-            # Ensure directory exists
             os.makedirs(config.REGISTRY_DIR, exist_ok=True)
             
             with open(config.INVENTORY_FILE, "w") as f:
                 json.dump(inventory, f, indent=2)
+                
+            # Expert Suggestion: Auto-backup
+            if config.AUTO_BACKUP_REGISTRY:
+                backup_file = config.INVENTORY_FILE + f".{time.strftime('%Y%m%d%H%M%S')}.bak"
+                with open(backup_file, "w") as f:
+                    json.dump(inventory, f, indent=2)
+                    
         finally:
             InventoryManager.release_lock()

@@ -1,98 +1,101 @@
 import os
 import platform
 import logging
-from typing import Any
+from typing import Any, Dict
 
-"""Global configuration and architectural constants for MF v5.1."""
+"""BlenPC v5.1.1 - Expert-Driven Configuration System."""
 
-# Configure logging
+# --- 1. I18N & UI SETTINGS (Expert: UX Designer & Technical Writer) ---
+I18N_LANGUAGE = os.getenv("BLENPC_LANG", "tr")  # Default to Turkish
+CLI_COLOR_THEME = "modern"  # options: modern, classic, mono
+LOG_FORMAT_EXTENDED = '%(asctime)s - %(name)s - %(levelname)s [%(filename)s:%(lineno)d] - %(message)s'
+
+# --- 2. LOGGING CONFIGURATION (Expert: DevOps Engineer) ---
 LOG_LEVEL = os.getenv("MF_LOG_LEVEL", "INFO")
 LOG_FILE = os.getenv("MF_LOG_FILE", None)
 
 logging.basicConfig(
     level=getattr(logging, LOG_LEVEL),
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    format=LOG_FORMAT_EXTENDED,
     handlers=[
         logging.StreamHandler(),
         logging.FileHandler(LOG_FILE) if LOG_FILE else logging.NullHandler()
     ]
 )
-
 logger = logging.getLogger("blenpc")
 
-# Project Root (determined dynamically)
-PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+# --- 3. PATH MANAGEMENT (Expert: Software Architect) ---
+# Dynamic Project Root Detection
+# Current file is in PROJECT_ROOT/src/blenpc/config.py
+# So PROJECT_ROOT is three levels up
+PACKAGE_ROOT = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-# Architectural Units (ISO 2848 inspired)
-GRID_UNIT = 0.25  # Meters
-STORY_HEIGHT = 3.0  # Meters
-WALL_THICKNESS_BASE = 0.2  # Meters
-
-# Performance & Limits
-MAX_SLOTS_PER_OBJECT = 32
-MAX_OBJECTS_PER_ROOM = 50
-MAX_LIBRARY_ASSETS = 10000
-MAX_RECURSIVE_DEPTH = 1
-BLENDER_MEMORY_WARN = 3000  # MB
-
-# Validations
-ALLOWED_ROTATIONS = [0, 90, 180, 270]
-MIN_ROOM_DIMENSION = 2.0  # Meters
-
-# Math Constants
-PHI = (1 + 5**0.5) / 2  # Golden Ratio
-
-# Paths (relative to PROJECT_ROOT)
+# Expert Fix: Use cross-platform path joining
 LIBRARY_DIR = os.path.join(PROJECT_ROOT, "_library")
 REGISTRY_DIR = os.path.join(PROJECT_ROOT, "_registry")
 INVENTORY_FILE = os.path.join(REGISTRY_DIR, "inventory.json")
 SLOTS_FILE = os.path.join(REGISTRY_DIR, "slot_types.json")
 TAGS_FILE = os.path.join(REGISTRY_DIR, "tag_vocabulary.json")
 
-# Blender Commands
+# --- 4. BLENDER EXECUTABLE (Expert: Blender Pipeline Specialist) ---
 def get_blender_path():
+    """Expert Fix: Improved Windows Blender discovery."""
     env_path = os.getenv("BLENDER_PATH") or os.getenv("BLENDER_EXECUTABLE")
     if env_path and os.path.exists(env_path):
         return env_path
     
     if platform.system() == "Windows":
-        return r"C:\Program Files\Blender Foundation\Blender 5.0\blender.exe"
+        # Standard installation paths for Blender 5.0
+        paths = [
+            r"C:\Program Files\Blender Foundation\Blender 5.0\blender.exe",
+            r"C:\Program Files\Blender Foundation\Blender 4.3\blender.exe",
+            os.path.expandvars(r"%APPDATA%\Blender Foundation\Blender\blender.exe")
+        ]
+        for p in paths:
+            if os.path.exists(p): return p
+        return "blender.exe" # Fallback to PATH
     elif platform.system() == "Darwin":
         return "/Applications/Blender.app/Contents/MacOS/Blender"
     else:
-        # Default for linux/sandbox
         return "/usr/bin/blender"
 
 BLENDER_PATH = get_blender_path()
 HEADLESS_ARGS = ["--background", "--python"]
 
-# Slot Generation Constants
-GOLDEN_RATIO_VARIATION = 0.04  # +/- 4% variation
-WINDOW_SILL_HEIGHT_DEFAULT = 1.2  # meters
-WINDOW_DEFAULT_WIDTH = 1.0  # meters
-WINDOW_DEFAULT_HEIGHT = 1.2  # meters
+# --- 5. PERFORMANCE & LIMITS (Expert: System Engineer) ---
+MAX_WORKER_PROCESSES = os.cpu_count() or 4
+STRICT_VALIDATION = True  # Expert Fix: Ensure production-ready assets
+CACHE_ENABLED = True
+AUTO_BACKUP_REGISTRY = True
+BLENDER_MEMORY_WARN = 3000  # MB
 
-# Inventory Locking Constants
-INVENTORY_LOCK_TIMEOUT = 5  # seconds
-INVENTORY_LOCK_POLL_INTERVAL = 0.1  # seconds
-INVENTORY_LOCK_STALE_AGE = 60  # seconds
+# --- 6. ARCHITECTURAL CONSTANTS (Expert: Architect) ---
+GRID_UNIT = 0.25
+STORY_HEIGHT = 3.0
+WALL_THICKNESS_BASE = 0.2
+DEFAULT_UNIT_SYSTEM = "metric"  # metric or imperial
+EXPORT_PRECISION = 4  # decimal places for geometry
 
-# NEW v5.1 CONSTANTS
-DEFAULT_ROOF_PITCH = 35.0  # degrees
-TEST_TIMEOUT_DEFAULT = 120  # seconds
+# --- 7. MATH CONSTANTS ---
+PHI = (1 + 5**0.5) / 2
+GOLDEN_RATIO_VARIATION = 0.04
+
+# --- 8. INVENTORY LOCKING (Expert: Cyber Security Specialist) ---
+INVENTORY_LOCK_TIMEOUT = 5
+INVENTORY_LOCK_POLL_INTERVAL = 0.1
+INVENTORY_LOCK_STALE_AGE = 60
+
+# --- 9. EXPORT SETTINGS ---
 EXPORT_FORMATS_SUPPORTED = ["glb", "blend", "fbx", "obj"]
 
-def safe_import_config():
-    """Helper to handle relative vs absolute imports of config."""
-    try:
-        import config
-        return config
-    except ImportError:
-        try:
-            from . import config
-            return config
-        except ImportError:
-            import sys
-            sys.path.append(PROJECT_ROOT)
-            import config
-            return config
+# --- 10. DEFAULTS ---
+DEFAULT_ROOF_PITCH = 35.0
+WINDOW_SILL_HEIGHT_DEFAULT = 1.2
+WINDOW_DEFAULT_WIDTH = 1.0
+WINDOW_DEFAULT_HEIGHT = 1.2
+TEST_TIMEOUT_DEFAULT = 120
+
+def get_settings() -> Dict[str, Any]:
+    """Returns all settings as a dictionary."""
+    return {k: v for k, v in globals().items() if k.isupper()}

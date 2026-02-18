@@ -2,18 +2,13 @@ import json
 import os
 from typing import List, Dict, Optional, Tuple
 
-# Use safe import from the project root
-try:
-    import config
-except ImportError:
-    from .. import config
+# Expert Fix: Absolute imports for the package structure
+from .. import config
 
 def get_aabb(obj) -> Dict[str, List[float]]:
     """Calculate Axis-Aligned Bounding Box for a Blender object."""
-    # Get world-space bounding box corners
     bbox_corners = [obj.matrix_world @ v for v in obj.bound_box]
     
-    # Calculate min/max for each axis
     min_x = min(v[0] for v in bbox_corners)
     min_y = min(v[1] for v in bbox_corners)
     min_z = min(v[2] for v in bbox_corners)
@@ -22,9 +17,10 @@ def get_aabb(obj) -> Dict[str, List[float]]:
     max_y = max(v[1] for v in bbox_corners)
     max_z = max(v[2] for v in bbox_corners)
     
+    # Expert Fix: Rounding for consistent exports
     return {
-        "min": [min_x, min_y, min_z],
-        "max": [max_x, max_y, max_z]
+        "min": [round(min_x, config.EXPORT_PRECISION), round(min_y, config.EXPORT_PRECISION), round(min_z, config.EXPORT_PRECISION)],
+        "max": [round(max_x, config.EXPORT_PRECISION), round(max_y, config.EXPORT_PRECISION), round(max_z, config.EXPORT_PRECISION)]
     }
 
 def find_asset(tags: List[str]) -> Optional[Dict]:
