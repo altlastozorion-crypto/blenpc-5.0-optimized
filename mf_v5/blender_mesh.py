@@ -102,7 +102,6 @@ def final_merge_and_cleanup(objects: List[bpy.types.Object], merge_distance: flo
     for obj in valid_objs:
         obj.select_set(True)
     
-    # In Blender 4.x, view_layer.objects.active is the way to set active object
     bpy.context.view_layer.objects.active = valid_objs[0]
     bpy.ops.object.join()
     
@@ -111,8 +110,30 @@ def final_merge_and_cleanup(objects: List[bpy.types.Object], merge_distance: flo
     
     bm = bmesh.new()
     bm.from_mesh(merged_obj.data)
+    
+    # 1. Remove doubles to merge vertices at wall junctions
     bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=merge_distance)
+    
+    # 2. Delete internal faces (faces where all edges are shared by > 2 faces)
+    # This is a common situation after joining wall boxes.
+    bm.edges.ensure_lookup_table()
+    bm.faces.ensure_lookup_table()
+    internal_faces = []
+    for f in bm.faces:
+        is_internal = True
+        for e in f.edges:
+            if len(e.link_faces) <= 2:
+                is_internal = False
+                break
+        if is_internal:
+            internal_faces.append(f)
+            
+    if internal_faces:
+        bmesh.ops.delete(bm, geom=internal_faces, context='FACES')
+    
+    # 3. Recalc normals to ensure consistent facing
     bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    
     bm.to_mesh(merged_obj.data)
     bm.free()
     

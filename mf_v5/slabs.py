@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Iterable, List
 
-from .config import CEILING_THICKNESS, FLOOR_THICKNESS
+from .config import CEILING_THICKNESS, FLOOR_THICKNESS, STORY_HEIGHT
 from .datamodel import Rect, Room
 
 
@@ -17,7 +17,7 @@ class Slab:
     kind: str
 
 
-def build_floor_ceiling_slabs(rooms: Iterable[Room], floor_index: int, story_height: float = 3.2) -> List[Slab]:
+def build_floor_ceiling_slabs(rooms: Iterable[Room], floor_index: int) -> List[Slab]:
     rooms = list(rooms)
     if not rooms:
         return []
@@ -28,8 +28,8 @@ def build_floor_ceiling_slabs(rooms: Iterable[Room], floor_index: int, story_hei
     max_y = max(r.rect.max_y for r in rooms)
     footprint = Rect(min_x, min_y, max_x, max_y)
 
-    floor_z = floor_index * story_height
-    ceil_z = floor_z + story_height - CEILING_THICKNESS
+    floor_z = floor_index * STORY_HEIGHT
+    ceil_z = floor_z + STORY_HEIGHT - CEILING_THICKNESS
 
     return [
         Slab(footprint, floor_z, FLOOR_THICKNESS, "floor"),

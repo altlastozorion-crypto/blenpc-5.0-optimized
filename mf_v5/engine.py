@@ -15,6 +15,7 @@ except ImportError:
 
 from .adjacency import build_adjacency, corridor_facing_walls
 from .cleanup import dedupe_segments, remove_zero_length_segments
+from .config import STORY_HEIGHT
 from .datamodel import BuildingSpec, RoofType, Rect
 from .doors import carve_doors, corridor_door_openings
 from .export import ExportSettings, export_manifest
@@ -65,7 +66,7 @@ def generate(spec: BuildingSpec, output_dir: Path) -> GenerationOutput:
         merged_walls = [seg for segs in carved.values() for seg in segs]
         merged_walls = dedupe_segments(remove_zero_length_segments(merged_walls))
         
-        floor_z_offset = floor_idx * 3.2
+        floor_z_offset = floor_idx * STORY_HEIGHT
         
         slabs = build_floor_ceiling_slabs(rooms, floor_idx)
         
@@ -76,7 +77,7 @@ def generate(spec: BuildingSpec, output_dir: Path) -> GenerationOutput:
             blender_objects.append(wall_obj)
             
             slab_obj = create_slab_mesh(slabs, f"Slabs_F{floor_idx}")
-            # Slab Z is already calculated in slabs.py, but we might need to double check
+            # Slab Z is already absolute in slabs.py, so we don't set location.z here
             blender_objects.append(slab_obj)
 
         if rooms:
@@ -85,7 +86,7 @@ def generate(spec: BuildingSpec, output_dir: Path) -> GenerationOutput:
             max_x = max(r.rect.max_x for r in rooms)
             max_y = max(r.rect.max_y for r in rooms)
             top_footprint = (min_x, min_y, max_x, max_y)
-            top_z = floor_idx * 3.2 + 3.2
+            top_z = (floor_idx + 1) * STORY_HEIGHT
 
         floor_outputs.append(
             FloorOutput(
