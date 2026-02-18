@@ -1,0 +1,17 @@
+# mansion.yaml - BlenPC v5.1 Spec Example
+version: "1.0"
+building:
+  name: "ModernMansion"
+  width: 25.0
+  depth: 20.0
+  floors: 3
+  seed: 2026
+  roof:
+    type: hip
+    pitch: 40
+  output:
+    directory: "./output/mansion"
+  export:
+    formats: [glb, blend]
+    collider: true
+    manifest: true

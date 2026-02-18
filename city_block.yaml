@@ -1,0 +1,29 @@
+# city_block.yaml - BlenPC v5.1 Batch Spec Example
+version: "1.0"
+batch:
+  output:
+    directory: "./output/city_block"
+  export:
+    formats: [glb]
+    collider: true
+  buildings:
+    - name: "House_01"
+      width: 12.0
+      depth: 10.0
+      floors: 2
+      seed: 101
+      roof: {type: gabled}
+    
+    - name: "House_02"
+      width: 14.0
+      depth: 12.0
+      floors: 2
+      seed: 102
+      roof: {type: hip}
+    
+    - name: "Small_Apartment"
+      width: 25.0
+      depth: 18.0
+      floors: 4
+      seed: 201
+      roof: {type: flat}
